@@ -212,7 +212,7 @@ final class lib_test extends \advanced_testcase {
         $this->assertStringContainsString('data-enrol="apply"', $html);
         $this->assertStringContainsString('<h3 class="mb-0">Apply for a scholarship</h3>', $html);
         $this->assertStringContainsString('full-width-labels', $html);
-        $this->assertStringContainsString(get_string('requestaccess', 'enrol_apply'), $html);
+        $this->assertStringContainsString(get_string('sendapplication', 'enrol_apply'), $html);
     }
 
     public function test_someone_without_the_capability_cannot_confirm(): void {

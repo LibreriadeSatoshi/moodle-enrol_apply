@@ -71,6 +71,25 @@ final class apply_form_test extends \advanced_testcase {
         $this->assertNotNull($this->submitted_form(ENROL_APPLY_COMMENT_OPTIONAL, '')->get_data());
     }
 
+    public function test_a_multilang_label_shows_only_the_current_language(): void {
+        global $DB;
+        $this->resetAfterTest();
+        // As on a site with the multilang filter applied to content and headings.
+        filter_set_global_state('multilang', TEXTFILTER_ON);
+        set_config('filterall', 1);
+        set_config('stringfilters', 'multilang');
+        \filter_manager::reset_caches();
+        $this->setUser($this->getDataGenerator()->create_user());
+        $plugin = enrol_get_plugin('apply');
+        $course = $this->getDataGenerator()->create_course();
+        $label = '<span lang="en" class="multilang">About you</span><span lang="es" class="multilang">Sobre ti</span>';
+        $id = $plugin->add_instance($course, ['customint7' => ENROL_APPLY_COMMENT_OPTIONAL, 'customtext2' => $label]
+            + $plugin->get_instance_defaults());
+        $html = (new \enrol_apply_apply_form(null, $DB->get_record('enrol', ['id' => $id])))->render();
+        $this->assertStringContainsString('About you', $html);
+        $this->assertStringNotContainsString('Sobre ti', $html);
+    }
+
     public function test_without_the_field_the_request_is_just_the_button(): void {
         $form = $this->submitted_form(ENROL_APPLY_COMMENT_OFF, null);
         $this->assertNotNull($form->get_data());

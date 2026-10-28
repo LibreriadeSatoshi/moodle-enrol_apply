@@ -62,8 +62,10 @@ class enrol_apply_apply_form extends moodleform {
             '<p>' . get_string('requestintro', 'enrol_apply') . '</p>';
         $mform->addElement('html', $intro);
         $comment_title = get_string('comment', 'enrol_apply');
-        if($instance->customtext2 != ''){
-            $comment_title = $instance->customtext2;
+        if (trim((string) $instance->customtext2) !== '') {
+            // Through the filters, so the label can be in several languages (multilang) like the intro.
+            $comment_title = format_string($instance->customtext2, true,
+                ['context' => context_course::instance($instance->courseid)]);
         }
 
         // Optionnal commentary zone
@@ -90,7 +92,7 @@ class enrol_apply_apply_form extends moodleform {
 
         $mform->setDefaults((array)$USER);
 
-        $this->add_action_buttons(false, get_string('requestaccess', 'enrol_apply'));
+        $this->add_action_buttons(false, get_string('sendapplication', 'enrol_apply'));
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
