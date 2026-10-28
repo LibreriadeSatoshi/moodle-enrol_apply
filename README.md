@@ -1,8 +1,7 @@
 # Enrolment upon approval for Moodle 5.1
 
-Fork of [emeneo/moodle-enrol_apply](https://github.com/emeneo/moodle-enrol_apply) for Moodle 5.1, for sites where people
-apply somewhere else first (a website, a form) and then request access to the course in Moodle, where a site manager
-confirms it. Changes from upstream:
+Fork of [emeneo/moodle-enrol_apply](https://github.com/emeneo/moodle-enrol_apply) for Moodle 5.1: users request access
+to a course, and a site manager or teacher confirms it before they are enrolled. Changes from upstream:
 
 - Works on Moodle 5.1 (`version.php`), with PHPUnit tests in `tests/`.
 - Emails to students use the plugin's default text in each student's language when the subject or content setting is
