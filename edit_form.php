@@ -132,8 +132,9 @@ class enrol_apply_edit_form extends moodleform {
         // Add checkbox for optionnal commentary zone
         // Start modification
         $options = array(
-            1 => get_string('yes'),
-            0 => get_string('no'),
+            ENROL_APPLY_COMMENT_REQUIRED => get_string('commentrequired', 'enrol_apply'),
+            ENROL_APPLY_COMMENT_OPTIONAL => get_string('yes'),
+            ENROL_APPLY_COMMENT_OFF => get_string('no'),
         );
         $mform->addElement('select', 'customint7', get_string('opt_commentaryzone', 'enrol_apply'), $options);
         $mform->setDefault('customint7', 0);

@@ -136,7 +136,7 @@ $string['group'] = 'Group assignement';
 $string['group_help'] = 'You can assign none or multiples groups';
 
 $string['opt_commentaryzone'] = 'Commentary field';
-$string['opt_commentaryzone_help'] = 'Yes -> Enable the commentary field in the enrol form';
+$string['opt_commentaryzone_help'] = 'Yes: a comment field in the request form. Yes, required: the request can\'t be sent with it empty.';
 
 $string['expirymessageenrollersubject'] = 'Apply enrolment expiry notification';
 $string['expirymessageenrollerbody'] = 'Apply enrolment in the course \'{$a->course}\' will expire within the next {$a->threshold} for the following users:
@@ -164,3 +164,4 @@ $string['waitinglist_defaultsubject'] = 'Your request to join {$a} is on the wai
 $string['waitinglist_defaultcontent'] = '<p>Hi {firstname},</p><p>Your request to join <a href="{courseurl}">{content}</a> is on the waiting list. We will email you if a place opens up.</p>';
 $string['cancelation_defaultsubject'] = 'Your request to join {$a} was not accepted';
 $string['cancelation_defaultcontent'] = '<p>Hi {firstname},</p><p>Your request to join {content} was not accepted this time.</p>';
+$string['commentrequired'] = 'Yes, required';

@@ -24,6 +24,13 @@
 
 /** The user is put onto a waiting list and therefore the enrolment not active (used in user_enrolments->status) */
 define('ENROL_APPLY_USER_WAIT', 2);
+
+/** The request form has no comment field. */
+define('ENROL_APPLY_COMMENT_OFF', 0);
+/** The request form has a comment field the user can leave empty. */
+define('ENROL_APPLY_COMMENT_OPTIONAL', 1);
+/** The request form has a comment field the user must fill in. */
+define('ENROL_APPLY_COMMENT_REQUIRED', 2);
 require_once($CFG->dirroot.'/group/lib.php');
 
 class enrol_apply_plugin extends enrol_plugin {

@@ -71,9 +71,12 @@ class enrol_apply_apply_form extends moodleform {
 
         // Optionnal commentary zone
         // Start modification
-        if (($instance->customint7) == 1) {
+        if ((int) $instance->customint7 !== ENROL_APPLY_COMMENT_OFF) {
             $mform->addElement('textarea', 'applydescription', $comment_title, 'cols="80"');
             $mform->setType('applydescription', PARAM_TEXT);
+            if ((int) $instance->customint7 === ENROL_APPLY_COMMENT_REQUIRED) {
+                $mform->addRule('applydescription', null, 'required', null, 'client');
+            }
         }
         // End modification
 
