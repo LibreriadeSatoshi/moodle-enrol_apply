@@ -25,8 +25,9 @@
 defined('MOODLE_INTERNAL') || die();
 
 
-$plugin->version  = 2023101100;
-$plugin->requires = 2011080100;
+$plugin->version  = 2026102800;
+$plugin->requires = 2025100600; // Moodle 5.1.
+$plugin->supported = [501, 501];
 $plugin->maturity = MATURITY_STABLE;
-$plugin->release = 'Enrolment upon approval plugin Version 4.1-a';
+$plugin->release = '5.1.0';
 $plugin->component = 'enrol_apply';

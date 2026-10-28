@@ -49,7 +49,9 @@ class enrol_apply_apply_form extends moodleform {
         $this->instance = $instance;
         $plugin = enrol_get_plugin('apply');
 
-        $heading = $plugin->get_instance_name($instance);
+        // A named instance keeps its name; otherwise the heading says what the student does here.
+        $heading = $instance->name !== null && trim($instance->name) !== '' ? format_string($instance->name) :
+            get_string('requestaccess', 'enrol_apply');
         $mform->addElement('header', 'selfheader', $heading);
 
         if ($instance->customint3 > 0) {
@@ -59,7 +61,9 @@ class enrol_apply_apply_form extends moodleform {
             }
         }
 
-        $mform->addElement('html', '<p>'.$instance->customtext1.'</p>');
+        $intro = trim((string) $instance->customtext1) !== '' ? format_text($instance->customtext1, FORMAT_MOODLE) :
+            '<p>' . get_string('requestintro', 'enrol_apply') . '</p>';
+        $mform->addElement('html', $intro);
         $comment_title = get_string('comment', 'enrol_apply');
         if($instance->customtext2 != ''){
             $comment_title = $instance->customtext2;
@@ -86,7 +90,7 @@ class enrol_apply_apply_form extends moodleform {
 
         $mform->setDefaults((array)$USER);
 
-        $this->add_action_buttons(false, get_string('enrolme', 'enrol_self'));
+        $this->add_action_buttons(false, get_string('requestaccess', 'enrol_apply'));
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);

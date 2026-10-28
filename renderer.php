@@ -166,8 +166,11 @@ class enrol_apply_renderer extends plugin_renderer_base {
         $course, $user, $manageurl, $applydescription, $standarduserfields = null, $extrauserfields = null) {
 
         $body = '<p>'. get_string('coursename', 'enrol_apply') .': '.format_string($course->fullname).'</p>';
-        $body .= '<p>'. get_string('applyuser', 'enrol_apply') .': '.$user->firstname.' '.$user->lastname.'</p>';
-        $body .= '<p>'. get_string('comment', 'enrol_apply') .': '.$applydescription.'</p>';
+        $body .= '<p>'. get_string('applyuser', 'enrol_apply') .': '.fullname($user).'</p>';
+        $body .= '<p>'. get_string('email') .': '.s($user->email).'</p>';
+        if (trim((string) $applydescription) !== '') {
+            $body .= '<p>'. get_string('comment', 'enrol_apply') .': '.s($applydescription).'</p>';
+        }
         if ($standarduserfields) {
             $body .= '<p><strong>'. get_string('user_profile', 'enrol_apply').'</strong></p>';
             $body .= '<p>'. get_string('firstname') .': '.$standarduserfields->firstname.'</p>';
@@ -185,11 +188,6 @@ class enrol_apply_renderer extends plugin_renderer_base {
             $body .= '<p>'. get_string('middlename') .': '.$standarduserfields->middlename.'</p>';
             $body .= '<p>'. get_string('alternatename') .': '.$standarduserfields->alternatename.'</p>';
             $body .= '<p>'. get_string('url') .': '.$standarduserfields->url.'</p>';
-            $body .= '<p>'. get_string('icqnumber') .': '.$standarduserfields->icq.'</p>';
-            $body .= '<p>'. get_string('skypeid') .': '.$standarduserfields->skype.'</p>';
-            $body .= '<p>'. get_string('aimid') .': '.$standarduserfields->aim.'</p>';
-            $body .= '<p>'. get_string('yahooid') .': '.$standarduserfields->yahoo.'</p>';
-            $body .= '<p>'. get_string('msnid') .': '.$standarduserfields->msn.'</p>';
             $body .= '<p>'. get_string('idnumber') .': '.$standarduserfields->idnumber.'</p>';
             $body .= '<p>'. get_string('institution') .': '.$standarduserfields->institution.'</p>';
             $body .= '<p>'. get_string('department') .': '.$standarduserfields->department.'</p>';
