@@ -48,6 +48,7 @@ $string['cancelmailsubject'] = 'Asunto del correo de rechazo';
 $string['cancelmailsubject_desc'] = 'Déjalo vacío para usar el texto por defecto, en el idioma de cada estudiante.';
 $string['cantenrol'] = 'La matriculación está desactivada o inactiva';
 $string['comment'] = 'Comentario';
+$string['commentrequired'] = 'Sí, obligatorio';
 $string['confirmation_defaultcontent'] = '<p>Hola, {firstname}:</p><p>Tu solicitud fue confirmada: ya estás inscrito en <a href="{courseurl}">{content}</a>. También lo encontrarás en Mis cursos.</p>';
 $string['confirmation_defaultsubject'] = 'Ya estás inscrito en {$a}';
 $string['confirmenrol'] = 'Gestionar solicitudes';
@@ -112,7 +113,7 @@ $string['notifycoursebased_desc'] = 'Por defecto en los métodos nuevos: avisar 
 $string['notifyglobal'] = 'Aviso de solicitud nueva (global, p. ej. gestores y administradores del sitio)';
 $string['notifyglobal_desc'] = 'Quién recibe un aviso de las solicitudes nuevas de cualquier curso.';
 $string['opt_commentaryzone'] = 'Campo de comentario';
-$string['opt_commentaryzone_help'] = 'Sí: muestra un campo de comentario en la solicitud.';
+$string['opt_commentaryzone_help'] = 'Sí: un campo de comentario en la solicitud. Sí, obligatorio: no se puede enviar la solicitud con el campo vacío.';
 $string['pluginname'] = 'Matriculación con aprobación';
 $string['pluginname_desc'] = 'Con este plugin las personas solicitan acceso a un curso, y un gestor del sitio o un profesor lo confirma antes de matricularlas.';
 $string['privacy:metadata'] = 'El plugin Matriculación con aprobación no guarda datos personales.';

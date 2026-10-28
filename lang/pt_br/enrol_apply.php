@@ -48,6 +48,7 @@ $string['cancelmailsubject'] = 'Assunto do e-mail de recusa';
 $string['cancelmailsubject_desc'] = 'Deixe vazio para usar o texto padrão, no idioma de cada estudante.';
 $string['cantenrol'] = 'A inscrição está desativada ou inativa';
 $string['comment'] = 'Comentário';
+$string['commentrequired'] = 'Sim, obrigatório';
 $string['confirmation_defaultcontent'] = '<p>Olá, {firstname}.</p><p>Sua solicitação foi confirmada: você já está inscrito em <a href="{courseurl}">{content}</a>. Você também vai encontrá-lo em Meus cursos.</p>';
 $string['confirmation_defaultsubject'] = 'Você está inscrito em {$a}';
 $string['confirmenrol'] = 'Gerenciar solicitações';
@@ -112,7 +113,7 @@ $string['notifycoursebased_desc'] = 'Padrão para novos métodos: avisar todos q
 $string['notifyglobal'] = 'Aviso de nova solicitação (global, ex. gestores e administradores do site)';
 $string['notifyglobal_desc'] = 'Quem recebe um aviso das novas solicitações de qualquer curso.';
 $string['opt_commentaryzone'] = 'Campo de comentário';
-$string['opt_commentaryzone_help'] = 'Sim: mostra um campo de comentário na solicitação.';
+$string['opt_commentaryzone_help'] = 'Sim: um campo de comentário na solicitação. Sim, obrigatório: não é possível enviar a solicitação com o campo vazio.';
 $string['pluginname'] = 'Inscrição com aprovação';
 $string['pluginname_desc'] = 'Com este plugin as pessoas solicitam acesso a um curso, e um gestor do site ou um professor confirma antes de inscrevê-las.';
 $string['privacy:metadata'] = 'O plugin Inscrição com aprovação não guarda dados pessoais.';
