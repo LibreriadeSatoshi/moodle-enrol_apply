@@ -48,14 +48,14 @@ if ($ADMIN->fulltree) {
         'enrol_apply/confirmmailsubject',
         get_string('confirmmailsubject', 'enrol_apply'),
         get_string('confirmmailsubject_desc', 'enrol_apply'),
-        null,
+        '',
         PARAM_TEXT,
         60));
     $settings->add(new admin_setting_confightmleditor(
         'enrol_apply/confirmmailcontent',
         get_string('confirmmailcontent', 'enrol_apply'),
         get_string('confirmmailcontent_desc', 'enrol_apply'),
-        null,
+        '',
         PARAM_RAW));
 
     // Wait mail settings.
@@ -67,14 +67,14 @@ if ($ADMIN->fulltree) {
         'enrol_apply/waitmailsubject',
         get_string('waitmailsubject', 'enrol_apply'),
         get_string('waitmailsubject_desc', 'enrol_apply'),
-        null,
+        '',
         PARAM_TEXT,
         60));
     $settings->add(new admin_setting_confightmleditor(
         'enrol_apply/waitmailcontent',
         get_string('waitmailcontent', 'enrol_apply'),
         get_string('waitmailcontent_desc', 'enrol_apply'),
-        null,
+        '',
         PARAM_RAW));
 
     // Cancel mail settings...
@@ -86,14 +86,14 @@ if ($ADMIN->fulltree) {
         'enrol_apply/cancelmailsubject',
         get_string('cancelmailsubject', 'enrol_apply'),
         get_string('cancelmailsubject_desc', 'enrol_apply'),
-        null,
+        '',
         PARAM_TEXT,
         60));
     $settings->add(new admin_setting_confightmleditor(
         'enrol_apply/cancelmailcontent',
         get_string('cancelmailcontent', 'enrol_apply'),
         get_string('cancelmailcontent_desc', 'enrol_apply'),
-        null,
+        '',
         PARAM_RAW));
 
     // Notification settings...
@@ -144,12 +144,12 @@ if ($ADMIN->fulltree) {
     $options = array(1 => get_string('yes'),
                      0  => get_string('no'));
     $settings->add(new admin_setting_configselect('enrol_apply/show_standard_user_profile',
-        get_string('show_standard_user_profile', 'enrol_apply'), '', 1, $options));
+        get_string('show_standard_user_profile', 'enrol_apply'), '', 0, $options));
 
     $options = array(1 => get_string('yes'),
                      0  => get_string('no'));
     $settings->add(new admin_setting_configselect('enrol_apply/show_extra_user_profile',
-        get_string('show_extra_user_profile', 'enrol_apply'), '', 1, $options));
+        get_string('show_extra_user_profile', 'enrol_apply'), '', 0, $options));
 
     if (!during_initial_install()) {
         $options = get_default_enrol_roles(context_system::instance());

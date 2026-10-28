@@ -23,30 +23,30 @@
  */
 
 // The name of your plug-in. Displayed on admin menus.
-$string['enrolname'] = 'Course enrol confirmation';
-$string['pluginname'] = 'Course enrol confirmation';
-$string['pluginname_desc'] = 'With this plug-in users can apply to be enrolled in a course. A teacher or site manager will then have to approve the enrolment before the user gets enroled.';
+$string['enrolname'] = 'Enrolment upon approval';
+$string['pluginname'] = 'Enrolment upon approval';
+$string['pluginname_desc'] = 'With this plugin users request access to a course, and a site manager or teacher confirms it before they are enrolled.';
 
 $string['confirmmail_heading'] = 'Confirmation email';
 $string['confirmmail_desc'] = '';
 $string['confirmmailsubject'] = 'Confirmation email subject';
-$string['confirmmailsubject_desc'] = '';
+$string['confirmmailsubject_desc'] = 'Leave empty to use the default text, in each student\'s language.';
 $string['confirmmailcontent'] = 'Confirmation email content';
-$string['confirmmailcontent_desc'] = 'Please use the following special marks to replace email content with data from Moodle.<br/>{firstname}:The first name of the user; {content}:The course name;{lastname}:The last name of the user;{username}:The users registration username;{timeend}: The enrolment expiration date';
+$string['confirmmailcontent_desc'] = 'Leave empty to use the default text, in each student\'s language. Special marks replaced with data from Moodle: {firstname}, {lastname}, {username}, {content} (the course name), {courseurl} (the course link), {timeend} (the enrolment end date).';
 
 $string['waitmail_heading'] = 'Waiting list email';
 $string['waitmail_desc'] = '';
 $string['waitmailsubject'] = 'Waiting list mail subject';
-$string['waitmailsubject_desc'] = '';
+$string['waitmailsubject_desc'] = 'Leave empty to use the default text, in each student\'s language.';
 $string['waitmailcontent'] = 'Waiting list mail content';
-$string['waitmailcontent_desc'] = 'Please use the following special marks to replace email content with data from Moodle.<br/>{firstname}:The first name of the user; {content}:The course name;{lastname}:The last name of the user;{username}:The users registration username';
+$string['waitmailcontent_desc'] = 'Leave empty to use the default text, in each student\'s language. Special marks replaced with data from Moodle: {firstname}, {lastname}, {username}, {content} (the course name), {courseurl} (the course link).';
 
 $string['cancelmail_heading'] = 'Cancelation email';
 $string['cancelmail_desc'] = '';
 $string['cancelmailsubject'] = 'Cancelation email subject';
-$string['cancelmailsubject_desc'] = '';
+$string['cancelmailsubject_desc'] = 'Leave empty to use the default text, in each student\'s language.';
 $string['cancelmailcontent'] = 'Cancelation email content';
-$string['cancelmailcontent_desc'] = 'Please use the following special marks to replace email content with data from Moodle.<br/>{firstname}:The first name of the user; {content}:The course name;{lastname}:The last name of the user;{username}:The users registration username';
+$string['cancelmailcontent_desc'] = 'Leave empty to use the default text, in each student\'s language. Special marks replaced with data from Moodle: {firstname}, {lastname}, {username}, {content} (the course name), {courseurl} (the course link).';
 
 $string['notify_heading'] = 'Notification settings';
 $string['notify_desc'] = 'Define who gets notified about new enrolment applications.';
@@ -65,13 +65,13 @@ $string['applicationconfirmednotification'] = 'Your course enrolment application
 $string['applicationcancelednotification'] = 'Your course enrolment application was canceled.';
 $string['applicationdeferrednotification'] = 'Your course enrolment application was deferred (you are currently on the waiting list).';
 
-$string['confirmusers'] = 'Enrol Confirm';
+$string['confirmusers'] = 'Enrolment applications';
 $string['confirmusers_desc'] = 'Users in gray colored rows are on the waiting list.';
 
 $string['coursename'] = 'Course';
-$string['applyuser'] = 'First name / Surname';
+$string['applyuser'] = 'Name';
 $string['applyusermail'] = 'Email';
-$string['applydate'] = 'Enrol date';
+$string['applydate'] = 'Requested on';
 $string['btnconfirm'] = 'Confirm requests';
 $string['btnwait'] = 'Defer requests';
 $string['btncancel'] = 'Cancel requests';
@@ -87,10 +87,10 @@ $string['apply:manageapplications'] = 'Manage apply enrolment';
 $string['apply:unenrol'] = 'Cancel users from the course';
 $string['apply:unenrolself'] = 'Cancel self from the course';
 
-$string['notification'] = '<b>Enrolment application successfully sent</b>. <br/><br/>You will be informed by email when your enrolment has been confirmed.';
+$string['notification'] = '<b>Request sent.</b> We will email you when it is confirmed.';
 
-$string['mailtoteacher_suject'] = 'New Enrolment request!';
-$string['editdescription'] = 'Textarea description';
+$string['mailtoteacher_suject'] = 'New request to join a course';
+$string['editdescription'] = 'Text above the request button';
 $string['comment'] = 'Comment';
 $string['applycomment'] = 'Comment';
 $string['applymanage'] = 'Manage enrolment applications';
@@ -123,7 +123,7 @@ $string['expiredaction'] = 'Enrolment expiry action';
 $string['expiredaction_help'] = 'Select action to carry out when user enrolment expires. Please note that some user data and settings are purged from course during course unenrolment.';
 
 $string['submitted_info'] = 'Enrol info';
-$string['privacy:metadata'] = 'The Course enrol confirmation plugin does not store any personal data.';
+$string['privacy:metadata'] = 'The Enrolment upon approval plugin does not store any personal data.';
 
 $string['enrolperiod'] = 'Enrolment duration';
 $string['enrolperiod_desc'] = 'Default length of time that the enrolment is valid. If set to zero, the enrolment duration will be unlimited by default.';
@@ -156,4 +156,11 @@ $string['sendexpirynotificationstask'] = "Apply enrolment send expiry notificati
 $string['messageprovider:expiry_notification'] = 'Apply enrolment expiry notifications';
 
 $string["profileoption"] = "Profile Field to Show in Table";
-
+$string['requestaccess'] = 'Request access';
+$string['requestintro'] = 'Admission to this course is by application. Request access and we will email you when it is confirmed.';
+$string['confirmation_defaultsubject'] = 'You are enrolled in {$a}';
+$string['confirmation_defaultcontent'] = '<p>Hi {firstname},</p><p>Your request was confirmed: you are now enrolled in <a href="{courseurl}">{content}</a>. You will also find it in My courses.</p>';
+$string['waitinglist_defaultsubject'] = 'Your request to join {$a} is on the waiting list';
+$string['waitinglist_defaultcontent'] = '<p>Hi {firstname},</p><p>Your request to join <a href="{courseurl}">{content}</a> is on the waiting list. We will email you if a place opens up.</p>';
+$string['cancelation_defaultsubject'] = 'Your request to join {$a} was not accepted';
+$string['cancelation_defaultcontent'] = '<p>Hi {firstname},</p><p>Your request to join {content} was not accepted this time.</p>';

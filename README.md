@@ -1,3 +1,17 @@
+# Enrolment upon approval for Moodle 5.1
+
+Fork of [emeneo/moodle-enrol_apply](https://github.com/emeneo/moodle-enrol_apply) for Moodle 5.1, for sites where people
+apply somewhere else first (a website, a form) and then request access to the course in Moodle, where a site manager
+confirms it. Changes from upstream:
+
+- Works on Moodle 5.1 (`version.php`), with PHPUnit tests in `tests/`.
+- Emails to students use the plugin's default text in each student's language when the subject or content setting is
+  empty (en, es, pt_br), and a `{courseurl}` mark for the course link.
+- Reviewers are notified once each, in their language, with the applicant's email; the course reviewers' message is
+  sent (it was built but never sent) and site admins can be chosen in "New enrolment application notification (global)".
+- The request form asks for no profile fields by default and its button says "Request access".
+- Complete es and pt_br translations.
+
 # Description
 The enrolment plugin "enrol on approval" add an approval step into the course enrolment process.
 Users will be informed by mail as soon as their course application has been approved/rejected.

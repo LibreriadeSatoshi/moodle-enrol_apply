@@ -125,51 +125,7 @@ class enrol_apply_plugin extends enrol_plugin {
         if ($data = $form->get_data()) {
             // Only process when form submission is for this instance (multi instance support).
             if ($data->instance == $instance->id) {
-                $timestart = time();
-
-                // Start modification
-                $timeend = $timestart + $instance->enrolperiod;
-                // End modification
-
-                $roleid = $instance->roleid;
-
-                $this->enrol_user($instance, $USER->id, $roleid, $timestart, $timeend, ENROL_USER_SUSPENDED);
-                $userenrolment = $DB->get_record(
-                    'user_enrolments',
-                    array(
-                        'userid' => $USER->id,
-                        'enrolid' => $instance->id),
-                    'id', MUST_EXIST);
-                $applicationinfo = new stdClass();
-                $applicationinfo->userenrolmentid = $userenrolment->id;
-                // Opt_comment
-                // Start modification
-                if (isset($data->applydescription)) {
-                    $applicationinfo->comment = $data->applydescription;
-                } else {
-                    $applicationinfo->comment = '';
-                }
-
-                // End modification
-                $DB->insert_record('enrol_apply_applicationinfo', $applicationinfo, false);
-
-                // Adding groups to the user
-                // Start modification
-                $groups = $DB->get_records(
-                    'enrol_apply_groups',
-                    array('enrolid' => $instance->id),
-                    null,
-                    '*',
-                    null,
-                    null
-                );
-                foreach ($groups as $value) {
-                    groups_add_member($value->groupid, $USER->id);
-                }
-                // End modification
-
-
-                $this->send_application_notification($instance, $USER->id, $data);
+                $this->apply($instance, $USER->id, $data);
 
                 $notification = $OUTPUT->notification(get_string('notification', 'enrol_apply'), 'notifysuccess');
                 $button = $OUTPUT->single_button(new moodle_url('/course/view.php', array('id'=> $instance->courseid)),
@@ -181,6 +137,34 @@ class enrol_apply_plugin extends enrol_plugin {
         $output = $form->render();
 
         return $OUTPUT->box($output);
+    }
+
+    /**
+     * Records a user's application: a suspended enrolment until it is confirmed, the comment, the instance's groups,
+     * and the notifications to the people who review applications.
+     *
+     * @param stdClass $instance enrol_apply instance
+     * @param int $userid the applicant
+     * @param stdClass $data the submitted form (applydescription and profile fields, when the form shows them)
+     * @return void
+     */
+    public function apply(stdClass $instance, int $userid, stdClass $data): void {
+        global $DB;
+
+        $timestart = time();
+        $timeend = $instance->enrolperiod ? $timestart + $instance->enrolperiod : 0;
+        $this->enrol_user($instance, $userid, $instance->roleid, $timestart, $timeend, ENROL_USER_SUSPENDED);
+        $userenrolment = $DB->get_record('user_enrolments', ['userid' => $userid, 'enrolid' => $instance->id], 'id', MUST_EXIST);
+        $DB->insert_record('enrol_apply_applicationinfo', (object) [
+            'userenrolmentid' => $userenrolment->id,
+            'comment' => $data->applydescription ?? '',
+        ], false);
+
+        foreach ($DB->get_records('enrol_apply_groups', ['enrolid' => $instance->id]) as $group) {
+            groups_add_member($group->groupid, $userid);
+        }
+
+        $this->send_application_notification($instance, $userid, $data);
     }
 
     public function get_action_icons(stdClass $instance) {
@@ -422,6 +406,17 @@ class enrol_apply_plugin extends enrol_plugin {
         }
     }
 
+    /**
+     * Emails the applicant about their application, in their language. An empty subject or content in the plugin
+     * settings means the plugin's default text for that type.
+     *
+     * @param stdClass $instance enrol_apply instance
+     * @param stdClass $userenrolment the application
+     * @param string $type confirmation, waitinglist or cancelation
+     * @param string|false $subject the subject setting
+     * @param string|false $content the content setting
+     * @return void
+     */
     private function notify_applicant($instance, $userenrolment, $type, $subject, $content) {
         global $CFG;
         require_once($CFG->dirroot.'/enrol/apply/notification.php');
@@ -431,21 +426,37 @@ class enrol_apply_plugin extends enrol_plugin {
         $course = get_course($instance->courseid);
         $user = core_user::get_user($userenrolment->userid);
 
-        $content = $this->update_mail_content($content, $course, $user, $userenrolment);
-
-        $message = new enrol_apply_notification(
-            $user,
-            core_user::get_support_user(),
-            $type,
-            $subject,
-            $content,
-            course_get_url($course),
-            $instance->courseid);
-        message_send($message);
+        $this->in_language($user, function() use ($instance, $userenrolment, $type, $subject, $content, $course, $user) {
+            if (trim((string) $subject) === '') {
+                $subject = get_string($type . '_defaultsubject', 'enrol_apply', format_string($course->fullname));
+            }
+            if (trim(strip_tags((string) $content)) === '') {
+                $content = get_string($type . '_defaultcontent', 'enrol_apply');
+            }
+            $content = $this->update_mail_content($content, $course, $user, $userenrolment);
+            message_send(new enrol_apply_notification(
+                $user,
+                core_user::get_noreply_user(),
+                $type,
+                $subject,
+                $content,
+                course_get_url($course),
+                $instance->courseid));
+        });
     }
 
+    /**
+     * Tells the people who review applications about a new one, each once and in their language: the course's
+     * reviewers (instance setting), those with the capability over the applicant, and the ones chosen in the plugin
+     * settings.
+     *
+     * @param stdClass $instance enrol_apply instance
+     * @param int $userid the applicant
+     * @param stdClass $data the submitted form
+     * @return void
+     */
     private function send_application_notification($instance, $userid, $data) {
-        global $CFG, $PAGE,$DB;
+        global $CFG, $PAGE, $DB;
         require_once($CFG->dirroot.'/enrol/apply/notification.php');
         // Required for course_get_url() function.
         require_once($CFG->dirroot.'/course/lib.php');
@@ -470,91 +481,58 @@ class enrol_apply_plugin extends enrol_plugin {
             $extrauserfields = $applicant->profile;
         }
 
-        // Send notification to users with manageapplications in course context (instance depending)?
-        $courseuserstonotify = $this->get_notifycoursebased_users($instance);
-        if (!empty($courseuserstonotify)) {
-            $manageurl = new moodle_url("/enrol/apply/manage.php", array('id' => $instance->id));
-            if (!isset($data->applydescription)) {
-                $data->applydescription = '';
+        $userenrolment = $DB->get_record('user_enrolments', ['userid' => $userid, 'enrolid' => $instance->id], 'id', MUST_EXIST);
+        $recipients = [];
+        $add = function(array $users, moodle_url $manageurl) use (&$recipients) {
+            foreach ($users as $user) {
+                $recipients[$user->id] ??= [$user, $manageurl];
             }
-            $content = $renderer->application_notification_mail_body(
-                $course,
-                $applicant,
-                $manageurl,
-                $data->applydescription,
-                $standarduserfields,
-                $extrauserfields);
-            foreach ($courseuserstonotify as $user) {
-                $message = new enrol_apply_notification(
+        };
+        $add($this->get_notifycoursebased_users($instance), new moodle_url('/enrol/apply/manage.php', ['id' => $instance->id]));
+        $add($this->get_users_from_usercapabilits($userid), new moodle_url('/enrol/apply/manage.php', ['userenrol' => $userenrolment->id]));
+        $add($this->get_notifyglobal_users(), new moodle_url('/enrol/apply/manage.php'));
+        unset($recipients[$userid]);
+
+        foreach ($recipients as [$user, $manageurl]) {
+            $this->in_language($user, function() use ($renderer, $course, $applicant, $manageurl, $data, $standarduserfields,
+                    $extrauserfields, $user, $instance) {
+                $content = $renderer->application_notification_mail_body(
+                    $course,
+                    $applicant,
+                    $manageurl,
+                    $data->applydescription ?? '',
+                    $standarduserfields,
+                    $extrauserfields);
+                message_send(new enrol_apply_notification(
                     $user,
                     $applicant,
                     'application',
                     get_string('mailtoteacher_suject', 'enrol_apply'),
                     $content,
                     $manageurl,
-                    $instance->courseid);
-            }
+                    $instance->courseid));
+            });
         }
+    }
 
-        // Send notification to users with manageapplications in user context
-        $cohortuserstonotify = $this->get_users_from_usercapabilits($userid);
-
-        if (!empty($cohortuserstonotify)) {
-            $userenrol = $DB->get_record("user_enrolments",array("userid"=>$userid,"enrolid"=>$instance->id));
-            $manageurl = new moodle_url("/enrol/apply/manage.php", array('userenrol' => $userenrol->id));
-            if (!isset($data->applydescription)) {
-                $data->applydescription = '';
-            }
-            $content = $renderer->application_notification_mail_body(
-                $course,
-                $applicant,
-                $manageurl,
-                $data->applydescription,
-                $standarduserfields,
-                $extrauserfields);
-            foreach ($cohortuserstonotify as $user) {
-                $message = new enrol_apply_notification(
-                    $user,
-                    $applicant,
-                    'application',
-                    get_string('mailtoteacher_suject', 'enrol_apply'),
-                    $content,
-                    $manageurl,
-                    $instance->courseid);
-                message_send($message);
-            }
- 
+    /**
+     * Runs $send with the user's language as the current language, so the strings in their message are in it.
+     *
+     * @param stdClass $user the recipient
+     * @param callable $send
+     * @return void
+     */
+    private function in_language(stdClass $user, callable $send): void {
+        $lang = !empty($user->lang) && get_string_manager()->translation_exists($user->lang, false) ? $user->lang : '';
+        if ($lang === '') {
+            $send();
+            return;
         }
-
-        // Send notification to users with manageapplications in system context?
-        $globaluserstonotify = $this->get_notifyglobal_users();
-        
-        $globaluserstonotify = array_udiff($globaluserstonotify, $courseuserstonotify, function($usera, $userb) {
-            return $usera->id == $userb->id ? 0 : -1;
-        });
-        if (!empty($globaluserstonotify)) {
-            $manageurl = new moodle_url('/enrol/apply/manage.php');
-            if (!isset($data->applydescription)) {
-                $data->applydescription = '';
-            }
-            $content = $renderer->application_notification_mail_body(
-                $course,
-                $applicant,
-                $manageurl,
-                $data->applydescription,
-                $standarduserfields,
-                $extrauserfields);
-            foreach ($globaluserstonotify as $user) {
-                $message = new enrol_apply_notification(
-                    $user,
-                    $applicant,
-                    'application',
-                    get_string('mailtoteacher_suject', 'enrol_apply'),
-                    $content,
-                    $manageurl,
-                    $instance->courseid);
-                message_send($message);
-            }
+        $previous = force_current_language($lang);
+        try {
+            $send();
+        } finally {
+            force_current_language($previous);
         }
     }
 
@@ -606,16 +584,18 @@ class enrol_apply_plugin extends enrol_plugin {
      * @return array Array of user IDs.
      */
     public function get_notifyglobal_users() {
-        return get_users_from_config($this->get_config('notifyglobal'), 'enrol/apply:manageapplications', false);
+        // Site admins can be chosen too: on many sites they are the ones who review applications.
+        return get_users_from_config($this->get_config('notifyglobal'), 'enrol/apply:manageapplications');
     }
 
     private function update_mail_content($content, $course, $user, $userenrolment) {
         $replace = array(
-            'firstname' => $user->firstname,
+            'firstname' => s($user->firstname),
             'content'   => format_string($course->fullname),
-            'lastname'  => $user->lastname,
-            'username'  => $user->username,
-            'timeend'   => !empty($userenrolment->timeend) ? userdate($userenrolment->timeend) : ''
+            'lastname'  => s($user->lastname),
+            'username'  => s($user->username),
+            'timeend'   => !empty($userenrolment->timeend) ? userdate($userenrolment->timeend) : '',
+            'courseurl' => course_get_url($course)->out(false),
         );
         foreach ($replace as $key => $val) {
             $content = str_replace('{' . $key . '}', $val, $content);
