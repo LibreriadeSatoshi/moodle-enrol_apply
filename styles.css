@@ -1,0 +1,20 @@
+form#enrol_apply_manage_form tr {
+    border-left: 3px solid transparent;
+}
+
+form#enrol_apply_manage_form tr.enrol_apply_waitinglist_highlight {
+    border-color: grey;
+}
+
+.path-enrol-apply .formaction {
+    text-align: center;
+}
+
+/* Request form inside the enrolment card: no "Required" legend, the field's own marker says it. */
+.enrol-instance[data-enrol="apply"] .mform .fdescription.required {
+    display: none;
+}
+
+.enrol-instance[data-enrol="apply"] .mform .fitem:last-of-type {
+    margin-bottom: 0;
+}

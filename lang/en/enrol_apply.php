@@ -165,3 +165,4 @@ $string['waitinglist_defaultcontent'] = '<p>Hi {firstname},</p><p>Your request t
 $string['cancelation_defaultsubject'] = 'Your request to join {$a} was not accepted';
 $string['cancelation_defaultcontent'] = '<p>Hi {firstname},</p><p>Your request to join {content} was not accepted this time.</p>';
 $string['commentrequired'] = 'Yes, required';
+$string['sendapplication'] = 'Send application';

@@ -120,6 +120,7 @@ $string['privacy:metadata'] = 'El plugin Matriculación con aprobación no guard
 $string['profileoption'] = 'Campo del perfil que se muestra en la tabla';
 $string['requestaccess'] = 'Solicitar acceso';
 $string['requestintro'] = 'La admisión a este curso es por postulación. Solicita acceso y te avisaremos por correo cuando esté confirmado.';
+$string['sendapplication'] = 'Enviar postulación';
 $string['sendexpirynotificationstask'] = 'Enviar avisos de vencimiento de la matriculación con aprobación';
 $string['show_extra_user_profile'] = 'Mostrar los campos adicionales del perfil en la solicitud';
 $string['show_standard_user_profile'] = 'Mostrar los campos estándar del perfil en la solicitud';

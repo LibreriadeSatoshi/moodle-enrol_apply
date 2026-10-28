@@ -200,6 +200,21 @@ final class lib_test extends \advanced_testcase {
             $sink->get_messages()[0]->subject);
     }
 
+    public function test_the_enrolment_page_shows_the_request_in_cores_enrolment_card(): void {
+        global $PAGE;
+        [$course, $instance] = $this->course_with_instance(['name' => 'Apply for a scholarship']);
+        $this->setUser($this->getDataGenerator()->create_user());
+        $PAGE->set_url('/enrol/index.php', ['id' => $course->id]);
+        $PAGE->set_course($course);
+
+        $html = $this->plugin->enrol_page_hook($instance);
+
+        $this->assertStringContainsString('data-enrol="apply"', $html);
+        $this->assertStringContainsString('<h3 class="mb-0">Apply for a scholarship</h3>', $html);
+        $this->assertStringContainsString('full-width-labels', $html);
+        $this->assertStringContainsString(get_string('sendapplication', 'enrol_apply'), $html);
+    }
+
     public function test_someone_without_the_capability_cannot_confirm(): void {
         [, $instance] = $this->course_with_instance();
         $student = $this->getDataGenerator()->create_user();

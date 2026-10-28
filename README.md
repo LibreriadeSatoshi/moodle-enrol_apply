@@ -8,7 +8,8 @@ to a course, and a site manager or teacher confirms it before they are enrolled.
   empty (en, es, pt_br), and a `{courseurl}` mark for the course link.
 - Reviewers are notified once each, in their language, with the applicant's email; the course reviewers' message is
   sent (it was built but never sent) and site admins can be chosen in "New enrolment application notification (global)".
-- The request form asks for no profile fields by default and its button says "Request access".
+- The request form sits in core's enrolment card (header: the instance name or "Request access"), with labels
+  above fields, no profile fields by default, an optional or required comment, and a "Send application" button.
 - Complete es and pt_br translations.
 
 # Description

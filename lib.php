@@ -100,7 +100,7 @@ class enrol_apply_plugin extends enrol_plugin {
     }
 
     public function enrol_page_hook(stdClass $instance) {
-        global $CFG, $OUTPUT, $SESSION, $USER, $DB;
+        global $CFG, $OUTPUT, $USER, $DB;
 
         if (isguestuser()) {
             // Can not enrol guest!
@@ -109,41 +109,67 @@ class enrol_apply_plugin extends enrol_plugin {
 
         $allowapply = $this->allow_apply($instance);
         if ($allowapply !== true) {
-            return '<div class="alert alert-error">' . $allowapply . '</div>';
+            return $this->enrol_page_card($instance, $this->enrol_page_message($allowapply, 'warning'));
         }
 
         if ($DB->record_exists('user_enrolments', array('userid' => $USER->id, 'enrolid' => $instance->id))) {
-            return $OUTPUT->notification(get_string('notification', 'enrol_apply'), 'notifysuccess');
+            return $this->enrol_page_card($instance, $this->enrol_page_message(get_string('notification', 'enrol_apply'), 'success'));
         }
 
         if ($instance->customint3 > 0) {
             // Max enrol limit specified.
             $count = $DB->count_records('user_enrolments', array('enrolid' => $instance->id));
             if ($count >= $instance->customint3) {
-                // Bad luck, no more self enrolments here.
-                return '<div class="alert alert-error">'.get_string('maxenrolledreached_left', 'enrol_apply')." (".$count.") ".get_string('maxenrolledreached_right', 'enrol_apply').'</div>';
+                return $this->enrol_page_card($instance, $this->enrol_page_message(
+                    get_string('maxenrolledreached_left', 'enrol_apply') . " ($count) " .
+                    get_string('maxenrolledreached_right', 'enrol_apply'), 'warning'));
             }
         }
 
         require_once("$CFG->dirroot/enrol/apply/apply_form.php");
 
-        $form = new enrol_apply_apply_form(null, $instance);
+        // Labels above their fields: the form sits in a card, not on a full-width page.
+        $form = new enrol_apply_apply_form(null, $instance, 'post', '', ['class' => 'full-width-labels']);
 
         if ($data = $form->get_data()) {
             // Only process when form submission is for this instance (multi instance support).
             if ($data->instance == $instance->id) {
                 $this->apply($instance, $USER->id, $data);
-
-                $notification = $OUTPUT->notification(get_string('notification', 'enrol_apply'), 'notifysuccess');
-                $button = $OUTPUT->single_button(new moodle_url('/course/view.php', array('id'=> $instance->courseid)),
-                    get_string('continue'));
-                return $notification . $button;
+                return $this->enrol_page_card($instance, $this->enrol_page_message(get_string('notification', 'enrol_apply'), 'success'));
             }
         }
 
-        $output = $form->render();
+        return $this->enrol_page_card($instance, $form->render());
+    }
 
-        return $OUTPUT->box($output);
+    /**
+     * The instance's block on the enrolment page, in core's enrolment card (as enrol_self and enrol_fee): the
+     * instance name, or "Request access", as its header.
+     *
+     * @param stdClass $instance
+     * @param string $body
+     * @return string
+     */
+    private function enrol_page_card(stdClass $instance, string $body): string {
+        global $OUTPUT;
+        $header = $instance->name !== null && trim($instance->name) !== '' ?
+            format_string($instance->name, true, ['context' => context_course::instance($instance->courseid)]) :
+            get_string('requestaccess', 'enrol_apply');
+        return $OUTPUT->render(new \core_enrol\output\enrol_page(instance: $instance, header: $header, body: $body));
+    }
+
+    /**
+     * A message inside the enrolment card.
+     *
+     * @param string $message
+     * @param string $type a notification type: info, success, warning
+     * @return string
+     */
+    private function enrol_page_message(string $message, string $type): string {
+        global $OUTPUT;
+        $notification = new \core\output\notification($message, $type, false);
+        $notification->set_extra_classes(['mb-0']);
+        return $OUTPUT->render($notification);
     }
 
     /**

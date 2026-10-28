@@ -120,6 +120,7 @@ $string['privacy:metadata'] = 'O plugin Inscrição com aprovação não guarda 
 $string['profileoption'] = 'Campo do perfil mostrado na tabela';
 $string['requestaccess'] = 'Solicitar acesso';
 $string['requestintro'] = 'A admissão neste curso é por candidatura. Solicite acesso e avisaremos por e-mail quando estiver confirmado.';
+$string['sendapplication'] = 'Enviar candidatura';
 $string['sendexpirynotificationstask'] = 'Enviar avisos de vencimento da inscrição com aprovação';
 $string['show_extra_user_profile'] = 'Mostrar os campos adicionais do perfil na solicitação';
 $string['show_standard_user_profile'] = 'Mostrar os campos padrão do perfil na solicitação';
